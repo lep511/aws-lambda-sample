@@ -1,7 +1,8 @@
 read -p "Install python 3.8? (Y/n) " installpy
 read -p "Enter name layer: " namelayer
 read -p "Enter package to install or [req.txt]: " packg
-read -p "Enter region: [us-east-1]" region
+read -p "Enter description: " description
+read -p "Enter region: " region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
@@ -15,8 +16,8 @@ then
     cd $cwd
 fi
 
-if [[ -z "$region" ]]; then
-    export region=us-east-1
+if [[ -z "$description" ]]; then
+    export description="-"
 fi
 
 mkdir -p python
@@ -29,4 +30,4 @@ fi
 
 zip -r layer.zip python
 
-aws lambda publish-layer-version --layer-name $namelayer --zip-file fileb://layer.zip --compatible-runtimes python3.8 --region $region
+aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.8 --region $region
