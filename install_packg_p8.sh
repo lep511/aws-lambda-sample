@@ -4,6 +4,7 @@ read -p "Enter package to install or [req.txt]: " packg
 read -p "Enter region: " region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
+then
     sudo yum update -y
     sudo amazon-linux-extras install docker -y
     sudo amazon-linux-extras install python3.8
