@@ -1,7 +1,7 @@
 read -p "Install python 3.9? (Y/n) " installpy
 read -p "Enter name layer: " namelayer
 read -p "Enter package to install or [req.txt]: " packg
-read -p "Enter region: " region
+read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
@@ -16,6 +16,10 @@ then
     ./configure --enable-optimizations
     sudo make altinstall
     python3.9 -m pip install --upgrade pip
+fi
+
+if [[ -z "$region" ]]; then
+    export region=us-east-1
 fi
 
 mkdir -p python
