@@ -1,7 +1,7 @@
 read -p "Install python 3.8? (Y/n) " installpy
 read -p "Enter name layer: " namelayer
 read -p "Enter package to install or [req.txt]: " packg
-read -p "Enter region: " region
+read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
@@ -10,6 +10,10 @@ then
     sudo amazon-linux-extras install python3.8
     curl -O https://bootstrap.pypa.io/get-pip.py
     python3.8 get-pip.py --user
+fi
+
+if [[ -z "$region" ]]; then
+    export region=us-east-1
 fi
 
 mkdir -p python
