@@ -1,6 +1,7 @@
 read -p "Install python 3.9? (Y/n) " installpy
 read -p "Enter name layer: " namelayer
 read -p "Enter package to install or [req.txt]: " packg
+read -p "Enter description: " description
 read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
@@ -25,6 +26,10 @@ if [[ -z "$region" ]]; then
     export region=us-east-1
 fi
 
+if [[ -z "$description" ]]; then
+    export description="-"
+fi
+
 mkdir -p python
 
 if [[ -z "$packg" ]]; then
@@ -35,4 +40,4 @@ fi
 
 zip -r layer.zip python
 
-aws lambda publish-layer-version --layer-name $namelayer --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
+aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
