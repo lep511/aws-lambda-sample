@@ -5,11 +5,14 @@ read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
+    cwd=$(pwd)
+    cd
     sudo yum update -y
     sudo amazon-linux-extras install docker -y
     sudo amazon-linux-extras install python3.8
     curl -O https://bootstrap.pypa.io/get-pip.py
     python3.8 get-pip.py --user
+    cd $cwd
 fi
 
 if [[ -z "$region" ]]; then
