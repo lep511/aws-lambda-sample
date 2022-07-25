@@ -5,6 +5,8 @@ read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
+    cwd=$(pwd)
+    cd
     sudo yum update -y
     sudo amazon-linux-extras install docker -y
     sudo yum -y groupinstall "Development Tools"
@@ -16,6 +18,7 @@ then
     ./configure --enable-optimizations
     sudo make altinstall
     python3.9 -m pip install --upgrade pip
+    cd $cwd
 fi
 
 if [[ -z "$region" ]]; then
