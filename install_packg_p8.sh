@@ -1,6 +1,6 @@
 read -p "Install python 3.8? (Y/n) " installpy
 read -p "Enter name layer: " namelayer
-read -p "Enter package to install: " packg
+read -p "Enter package to install or [req.txt]: " packg
 read -p "Enter region: " region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
@@ -12,7 +12,13 @@ if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 fi
 
 mkdir -p python
-python3.8 -m pip install $packg -t python/
+
+if [[ -z "$packg" ]]; then
+    python3.8 -m pip install -r req.txt -t python/
+else
+    python3.8 -m pip install $packg -t python/
+fi
+
 zip -r layer.zip python
 
 aws lambda publish-layer-version --layer-name $namelayer --zip-file fileb://layer.zip --compatible-runtimes python3.8 --region $region
