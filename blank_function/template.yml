@@ -11,9 +11,9 @@ Resources:
       Description: Call the AWS Lambda API
       Environment:
         Variables:
-          BUCKET_NAME: [enter bucket name]
-          FILE_NAME: [enter file name]
-          FOLDER_NAME: [enter folder name]
+          BUCKET_NAME: enter bucket name
+          FILE_NAME: enter file name
+          FOLDER_NAME: enter folder name
       Timeout: 10
       # Function's execution role
       Policies:
