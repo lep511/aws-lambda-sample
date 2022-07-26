@@ -30,3 +30,6 @@ echo ================
 ARTIFACT_BUCKET=$(cat bucket-name.txt)
 aws s3 rb --force s3://$ARTIFACT_BUCKET
 rm bucket-name.txt
+rm stack-name.txt
+rm out.yml
+rm -rf package
