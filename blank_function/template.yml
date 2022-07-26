@@ -7,12 +7,56 @@ Resources:
     Description: Creating Amazon S3 bucket from CloudFormation
     Properties:
       BucketName: dragon-sample-data-495-12
-  function:
+  AddDragon:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
-      CodeUri: function/.
+      CodeUri: AddDragon/.
+      Description: Call the AWS Lambda API
+      Environment:
+        Variables:
+          BUCKET_NAME: dragon-sample-data-495-12
+          FILE_NAME: NewDragonData
+          FOLDER_NAME: dragons
+      Timeout: 10
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AmazonS3FullAccess
+      Tracing: Active
+      Layers:
+        - !Ref libs
+  ListDragon:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      CodeUri: ListDragon/.
+      Description: Call the AWS Lambda API
+      Environment:
+        Variables:
+          BUCKET_NAME: dragon-sample-data-495-12
+          FILE_NAME: NewDragonData
+          FOLDER_NAME: dragons
+      Timeout: 10
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AmazonS3FullAccess
+      Tracing: Active
+      Layers:
+        - !Ref libs
+  ValidateDragon:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      CodeUri: ValidateDragon/.
       Description: Call the AWS Lambda API
       Environment:
         Variables:
