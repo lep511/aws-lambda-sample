@@ -31,3 +31,8 @@ def lambda_handler(event, context):
         Key=file_name, 
         Body=json.dumps(dragon_data, indent=4, sort_keys=True).encode()
     )
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps("Dragon correct ingested.")
+    }
