@@ -2,11 +2,29 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: An AWS Lambda application that calls the Lambda API.
 Resources:
+  BucketNameParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: dragon_data_bucket_name
+      Type: String
+      Value: dragon-sample-data-495-07
+      Description: Dragon bucket name.
+      Tags:
+        Environment: DEV
+  FileNameParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: dragon_data_file_name
+      Type: String
+      Value: DragonData
+      Description: Dragon file name.
+      Tags:
+        Environment: DEV
   S3Bucket:
     Type: AWS::S3::Bucket
     Description: Creating Amazon S3 bucket from CloudFormation
     Properties:
-      BucketName: dragon-sample-data-495-12
+      BucketName: dragon-sample-data-495-07
   AddDragon:
     Type: AWS::Serverless::Function
     Properties:
@@ -14,11 +32,6 @@ Resources:
       Runtime: python3.9
       CodeUri: AddDragon/.
       Description: Call the AWS Lambda API
-      Environment:
-        Variables:
-          BUCKET_NAME: dragon-sample-data-495-12
-          FILE_NAME: NewDragonData
-          FOLDER_NAME: dragons
       Timeout: 10
       # Function's execution role
       Policies:
@@ -26,21 +39,17 @@ Resources:
         - AWSLambda_ReadOnlyAccess
         - AWSXrayWriteOnlyAccess
         - AmazonS3FullAccess
+        - AmazonSSMReadOnlyAccess
       Tracing: Active
       Layers:
         - !Ref libs
-  ListDragon:
+  ListDragons:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
-      CodeUri: ListDragon/.
+      CodeUri: ListDragons/.
       Description: Call the AWS Lambda API
-      Environment:
-        Variables:
-          BUCKET_NAME: dragon-sample-data-495-12
-          FILE_NAME: NewDragonData
-          FOLDER_NAME: dragons
       Timeout: 10
       # Function's execution role
       Policies:
@@ -48,6 +57,7 @@ Resources:
         - AWSLambda_ReadOnlyAccess
         - AWSXrayWriteOnlyAccess
         - AmazonS3FullAccess
+        - AmazonSSMReadOnlyAccess
       Tracing: Active
       Layers:
         - !Ref libs
@@ -58,11 +68,6 @@ Resources:
       Runtime: python3.9
       CodeUri: ValidateDragon/.
       Description: Call the AWS Lambda API
-      Environment:
-        Variables:
-          BUCKET_NAME: dragon-sample-data-495-12
-          FILE_NAME: NewDragonData
-          FOLDER_NAME: dragons
       Timeout: 10
       # Function's execution role
       Policies:
@@ -70,6 +75,7 @@ Resources:
         - AWSLambda_ReadOnlyAccess
         - AWSXrayWriteOnlyAccess
         - AmazonS3FullAccess
+        - AmazonSSMReadOnlyAccess
       Tracing: Active
       Layers:
         - !Ref libs
