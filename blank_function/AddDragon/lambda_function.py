@@ -1,17 +1,20 @@
+##### Add Dragon
+##################
 import boto3
 import json
-import os
 from hashlib import sha256
 
 s3 = boto3.client('s3')
-
+ssm = boto3.client('ssm', 'us-east-1')
 
 def lambda_handler(event, context):
         
     id_element = sha256(event['dragon_name_str'].encode('utf-8')).hexdigest()
-    bucket_name = os.environ['BUCKET_NAME']
-    file_name = os.environ['FILE_NAME']
-    folder_name = os.environ['FOLDER_NAME']
+    bucket_name = ssm.get_parameter(
+        Name='dragon_data_bucket_name',
+        WithDecryption=False)['Parameter']['Value']
+    file_name = "newDataDragon"
+    folder_name = "dragons"
     
     dragon_data = {
      "id": json.dumps(id_element),

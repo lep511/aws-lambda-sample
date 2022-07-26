@@ -16,7 +16,7 @@ Resources:
     Properties:
       Name: dragon_data_file_name
       Type: String
-      Value: DragonData
+      Value: DragonData.json
       Description: Dragon file name.
       Tags:
         Environment: DEV
