@@ -20,7 +20,6 @@ def lambda_handler(event, context):
         Name='dragon_data_file_name',
         WithDecryption=False)['Parameter']['Value']
 
-    folder_name = "dragons"
     new_file = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     logger.info(new_file)
     
