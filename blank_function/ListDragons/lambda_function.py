@@ -16,20 +16,19 @@ def lambda_handler(event, context):
         Name='dragon_data_file_name',
         WithDecryption=False)['Parameter']['Value']
     
-    expression = "SELECT s.* FROM S3Object s"
+    expression = "select * from s3object[*][*] s"
 
     if 'queryStringParameters' in event and event['queryStringParameters'] is not None:
         if 'dragonName' in event['queryStringParameters']:
-            
-            expression = "SELECT s.* FROM S3Object s WHERE s.dragon_name_str = '" + event["queryStringParameters"]['dragonName'] + "'"
+            expression = "select * from S3Object[*][*] s where s.dragon_name_str = '" + event["queryStringParameters"]['dragonName'] + "'"
         if 'family' in event['queryStringParameters']:
-            expression = "SELECT s.* FROM S3Object s WHERE s.family_str =  '" + event["queryStringParameters"]['family'] + "'"
+            expression = "select * from S3Object[*][*] s where s.dragon_name_str =  '" + event["queryStringParameters"]['family'] + "'"
 
     result = s3.select_object_content(
             Bucket=bucket_name,
             Key=file_name,
             Expression=expression,
-             ExpressionType='SQL',
+            ExpressionType='SQL',
             InputSerialization={
                 'JSON': {
                     'Type': 'DOCUMENT'

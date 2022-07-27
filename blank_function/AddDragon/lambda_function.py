@@ -1,6 +1,7 @@
 ##### Add Dragon
 ##################
 import boto3
+from botocore.exceptions import ClientError
 import json
 from hashlib import sha256
 
@@ -29,13 +30,27 @@ def lambda_handler(event, context):
     
     file_name = folder_name + "/" + file_name + "-" + str(id_element).lower() + ".json"
 
-    s3.put_object(
-        Bucket=bucket_name, 
-        Key=file_name, 
-        Body=json.dumps(dragon_data, indent=4, sort_keys=True).encode()
-    )
+    try:
+        response = s3.head_object(
+            Bucket=bucket_name,
+            Key=file_name,
+        )
+        file_found = True
+    except ClientError as err:
+        file_found = False
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps("Dragon correct ingested.")
-    }
+    if file_found:
+        return {
+            'statusCode': 408,
+            'body': json.dumps("File exist.")
+        }
+    else:
+        s3.put_object(
+            Bucket=bucket_name, 
+            Key=file_name, 
+            Body=json.dumps(dragon_data, indent=4, sort_keys=True).encode()
+        )
+        return {
+            'statusCode': 200,
+            'body': json.dumps("Dragon correct ingested.")
+        }
