@@ -3,11 +3,12 @@
 import boto3
 import json
 
-ssm = boto3.client('ssm', 'us-east-1')
 
 def lambda_handler(event, context):
     
     s3 = boto3.client('s3','us-east-1')
+    ssm = boto3.client('ssm', 'us-east-1')
+
     bucket_name = ssm.get_parameter(
         Name='dragon_data_bucket_name',
         WithDecryption=False)['Parameter']['Value']
@@ -26,7 +27,7 @@ def lambda_handler(event, context):
 
     result = s3.select_object_content(
             Bucket=bucket_name,
-            Key='data_file.json',
+            Key=file_name,
             Expression=expression,
              ExpressionType='SQL',
             InputSerialization={
