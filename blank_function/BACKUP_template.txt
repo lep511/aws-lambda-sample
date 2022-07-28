@@ -1,23 +1,14 @@
-# Dragons App
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: An AWS Lambda application that calls the Lambda API.
-# -----------------------
-Parameters:
-# -----------------------
-  BucketNamePrefix:
-    Type: String
-    Default: dragon-sample-data
-# -----------------------
 Resources:
-# -----------------------
   BucketNameParameter:
     Type: AWS::SSM::Parameter
     Properties:
       Name: dragon_data_bucket_name
       Type: String
-      Value: !Sub "${BucketNamePrefix}-495-07"
-      Description: Dragon bucket name
+      Value: dragon-sample-data-495-07
+      Description: Dragon bucket name.
       Tags:
         Environment: DEV
   FileNameParameter:
@@ -26,61 +17,21 @@ Resources:
       Name: dragon_data_file_name
       Type: String
       Value: DragonData.json
-      Description: Dragon data file name
+      Description: Dragon file name.
       Tags:
         Environment: DEV
- # -----------------------
-  MainDragon:
-    Type: AWS::Serverless::Function
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Description: Creating Amazon S3 bucket from CloudFormation
     Properties:
-      Handler: lambda_function.lambda_handler
-      Runtime: python3.9
-      CodeUri: MainDragon/.
-      MemorySize: 128
-      Timeout: 10
-      # Function's execution role
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSLambda_ReadOnlyAccess
-        - AWSXrayWriteOnlyAccess
-        - AmazonS3FullAccess
-        - AmazonSSMReadOnlyAccess
-      Tracing: Active
-      Layers:
-        - !Ref libs
-      Events:
-        BucketEvent1:
-          Type: S3
-          Properties:
-            Bucket: !Ref S3Bucket
-            Events:
-              - 's3:ObjectCreated:*'
-# -----------------------
-  ValidateDragon:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: lambda_function.lambda_handler
-      Runtime: python3.9
-      CodeUri: ValidateDragon/.
-      Timeout: 10
-      # Function's execution role
-      Policies:
-        - AWSLambdaBasicExecutionRole
-        - AWSLambda_ReadOnlyAccess
-        - AWSXrayWriteOnlyAccess
-        - AmazonS3FullAccess
-        - AmazonSSMReadOnlyAccess
-      Tracing: Active
-      Layers:
-        - !Ref libs
-# -----------------------
+      BucketName: dragon-sample-data-495-07
   AddDragon:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: AddDragon/.
-      MemorySize: 128
+      Description: Call the AWS Lambda API
       Timeout: 10
       # Function's execution role
       Policies:
@@ -92,14 +43,13 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref libs
-# -----------------------
   ListDragons:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: ListDragons/.
-      MemorySize: 128
+      Description: Call the AWS Lambda API
       Timeout: 10
       # Function's execution role
       Policies:
@@ -111,10 +61,47 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref libs
-# -----------------------
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    Description: Creating Amazon S3 bucket from CloudFormation template
+  ValidateDragon:
+    Type: AWS::Serverless::Function
     Properties:
-      BucketName: !Sub "${BucketNamePrefix}-495-07"
-    
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      CodeUri: ValidateDragon/.
+      Description: Call the AWS Lambda API
+      Timeout: 10
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AmazonS3FullAccess
+        - AmazonSSMReadOnlyAccess
+      Tracing: Active
+      Layers:
+        - !Ref libs
+  MainDragon:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      CodeUri: MainDragon/.
+      Description: Call the AWS Lambda API
+      Timeout: 10
+      # Function's execution role
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambda_ReadOnlyAccess
+        - AWSXrayWriteOnlyAccess
+        - AmazonS3FullAccess
+        - AmazonSSMReadOnlyAccess
+      Tracing: Active
+      Layers:
+        - !Ref libs
+  libs:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: blank-python-lib
+      Description: Dependencies for the blank-python sample app.
+      ContentUri: package/.
+      CompatibleRuntimes:
+        - python3.9

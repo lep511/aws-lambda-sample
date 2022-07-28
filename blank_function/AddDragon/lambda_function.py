@@ -20,13 +20,20 @@ def lambda_handler(event, context):
      "location_state_str":event['body']['location_state_str']
     }
     
-    s3.put_object(
+    response = s3.put_object(
         Bucket=bucket_name, 
         Key=event['file_name'], 
         Body=json.dumps(dragon_data, indent=4, sort_keys=True).encode()
     )
+    res_code = response['ResponseMetadata']['HTTPStatusCode']
     
-    return {
-        'statusCode': 200,
-        'body': json.dumps("Dragon correct ingested.")
-    }
+    if res_code == 200:
+        return {
+            'statusCode': 200,
+            'body': json.dumps("Dragon correct ingested.")
+        }
+    else:
+        return {
+            'statusCode': res_code,
+            'body': json.dumps("The dragon could not be entered.")
+        }
