@@ -1,0 +1,8 @@
+#set($body= $input.json('$'))
+#set($inputRoot='{ "data" :'+$body+',"apiInfo":{"httpMethod" :"'+ $context.httpMethod+'", "apiKey":"'+ $context.identity.apiKey+'"}}')
+#set($apiData=$util.escapeJavaScript($inputRoot))
+#set($apiData=$apiData.replaceAll("\\'","'"))
+{
+  "input" :"$apiData",
+  "stateMachineArn": "<replace with state machine ARN>"  
+}
