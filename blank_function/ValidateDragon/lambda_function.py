@@ -18,7 +18,6 @@ def lambda_handler(event, context):
 
     try:
         dragon_data = {
-            "id": json.dumps(event['id_file']),
             "description_str":event['description_str'],
             "dragon_name_str":event['dragon_name_str'],
             "family_str":event['family_str'],
