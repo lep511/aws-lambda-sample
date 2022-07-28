@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Lambda application that calls the Lambda API.
+Parameters:
+  BucketNamePrefix:
+    Type: String
+    Default: dragons-data-bucket
+Resources:
+  BucketNameParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: dragon_data_bucket_name
+      Type: String
+      Value: !Sub "${BucketNamePrefix}-156-25-98"
+      Description: Dragon bucket name
+      Tags:
+        Environment: DEV
+  FileNameParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: dragon_data_file_name
+      Type: String
+      Value: DragonData.json
+      Description: Dragon data file name
+      Tags:
+        Environment: DEV
+  DragonFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      CodeUri: .
+      Description: |
+        Lambda function that calls the Lambda API.
+        This function calls the Lambda API to get the dragon data.
+        The Lambda API is called by the Lambda function.
+        The Lambda function returns the dragon data.
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Sub "${BucketNamePrefix}-156-25-98"
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket: !Ref S3Bucket
+            Events:
+              - 's3:ObjectCreated:*'
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Description: Creating Amazon S3 bucket from CloudFormation template
+    Properties:
+      BucketName: !Sub "${BucketNamePrefix}-156-25-98"
