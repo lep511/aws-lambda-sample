@@ -8,9 +8,11 @@ def lambda_handler(event, context):
         
     s3 = boto3.client('s3')    
     bucket_name = event['bucket_name']
+    file_name = event['file_name']
+    id_element = event['id_file']
     
     dragon_data = {
-     "id": json.dumps(event['id_file']),
+     "id": json.dumps(id_element),
      "description_str":event['body']['description_str'],
      "dragon_name_str":event['body']['dragon_name_str'],
      "family_str":event['body']['family_str'],
@@ -22,7 +24,7 @@ def lambda_handler(event, context):
     
     response = s3.put_object(
         Bucket=bucket_name, 
-        Key=event['file_name'], 
+        Key=file_name, 
         Body=json.dumps(dragon_data, indent=4, sort_keys=True).encode()
     )
     res_code = response['ResponseMetadata']['HTTPStatusCode']
@@ -30,6 +32,8 @@ def lambda_handler(event, context):
     if res_code == 200:
         return {
             'statusCode': 200,
+            'bucket_name': bucket_name,
+            'file_name': file_name,
             'body': json.dumps("Dragon correct ingested.")
         }
     else:

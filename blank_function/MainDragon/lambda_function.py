@@ -2,7 +2,6 @@
 ##################
 import boto3
 import json
-import urllib.parse
 import logging
 
 logger = logging.getLogger()
@@ -12,15 +11,13 @@ def lambda_handler(event, context):
         
     s3 = boto3.client('s3')
     ssm = boto3.client('ssm', 'us-east-1')
+    bucket_name = event['bucket_name']
+    new_file = event['file_name']
 
-    bucket_name = ssm.get_parameter(
-        Name='dragon_data_bucket_name',
-        WithDecryption=False)['Parameter']['Value']
     file_name = ssm.get_parameter(
         Name='dragon_data_file_name',
         WithDecryption=False)['Parameter']['Value']
 
-    new_file = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     logger.info(new_file)
     
     try:
