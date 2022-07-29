@@ -10,5 +10,4 @@ tar xvf Python-3.9.10.tgz
 cd Python-*/
 ./configure --enable-optimizations
 sudo make altinstall
-python3.9 -m pip install --upgrade pip
 cd $cwd

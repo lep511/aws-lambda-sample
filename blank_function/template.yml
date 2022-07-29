@@ -92,7 +92,7 @@ Resources:
         Variables:
           BUCKET_NAME: !Sub "${BucketNamePrefix}-495-117"
           FILE_NAME: DragonData.json
-          STATE_MACHINE: arn:aws:_______
+          STATE_MACHINE: !GetAtt DragonsStateMachine.Arn
       Timeout: 10
       # Function's execution role
       Policies:
@@ -101,6 +101,7 @@ Resources:
         - AWSXrayWriteOnlyAccess
         - AmazonS3FullAccess
         - AmazonSSMReadOnlyAccess
+        - AWSStepFunctionsFullAccess
       Tracing: Active
       Layers:
         - !Ref libs
@@ -130,6 +131,10 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: ListDragons/.
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub "${BucketNamePrefix}-495-117"
+          FILE_NAME: DragonData.json
       MemorySize: 128
       Timeout: 10
       # Function's execution role

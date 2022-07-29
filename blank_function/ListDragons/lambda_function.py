@@ -2,19 +2,13 @@
 ##################
 import boto3
 import json
-
+import os
 
 def lambda_handler(event, context):
     
     s3 = boto3.client('s3','us-east-1')
-    ssm = boto3.client('ssm', 'us-east-1')
-
-    bucket_name = ssm.get_parameter(
-        Name='dragon_data_bucket_name',
-        WithDecryption=False)['Parameter']['Value']
-    file_name = ssm.get_parameter(
-        Name='dragon_data_file_name',
-        WithDecryption=False)['Parameter']['Value']
+    bucket_name = os.environ['BUCKET_NAME']
+    file_name = os.environ['FILE_NAME']
     
     expression = "select * from s3object[*][*] s"
 
