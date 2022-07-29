@@ -11,25 +11,6 @@ Parameters:
 # -----------------------
 Resources:
 # -----------------------
-  BucketNameParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: dragon_data_bucket_name
-      Type: String
-      Value: !Sub "${BucketNamePrefix}-495-117"
-      Description: Dragon bucket name
-      Tags:
-        Environment: DEV
-  FileNameParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: dragon_data_file_name
-      Type: String
-      Value: DragonData.json
-      Description: Dragon data file name
-      Tags:
-        Environment: DEV
- # -----------------------
   MainDragon:
     Type: AWS::Serverless::Function
     Properties:
@@ -55,6 +36,11 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: ValidateDragon/.
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub "${BucketNamePrefix}-495-117"
+          FILE_NAME: DragonData.json
+          STATE_MACHINE: arn:aws:_______
       Timeout: 10
       # Function's execution role
       Policies:

@@ -10,13 +10,9 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
         
     s3 = boto3.client('s3')
-    ssm = boto3.client('ssm', 'us-east-1')
+    file_name = event['file_name']
     bucket_name = event['bucket_name']
-    new_file = event['file_name']
-
-    file_name = ssm.get_parameter(
-        Name='dragon_data_file_name',
-        WithDecryption=False)['Parameter']['Value']
+    new_file = event['new_file']
 
     logger.info(new_file)
     

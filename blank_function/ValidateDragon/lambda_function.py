@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 import json
 import logging
 from hashlib import sha256
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -12,7 +13,8 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
     
     s3 = boto3.client('s3')
-    ssm = boto3.client('ssm')
+    bucket_name = os.environ['BUCKET_NAME']
+    file_name = os.environ['FILE_NAME']
     folder_name = 'dragons'
     file_base = 'newDataDragon'
 
@@ -31,18 +33,14 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps("Bad Request.")
         }
-    
-    bucket_name = ssm.get_parameter(
-        Name='dragon_data_bucket_name',
-        WithDecryption=False)['Parameter']['Value']
-    
+      
     id_element = sha256(event['dragon_name_str'].encode('utf-8')).hexdigest()
-    file_name = folder_name + "/" + file_base + "-" + str(id_element).lower() + ".json"
+    new_file = folder_name + "/" + file_base + "-" + str(id_element).lower() + ".json"
 
-    logger.info(file_name)
+    logger.info(new_file)
     
     try:
-        response = s3.head_object(Bucket=bucket_name, Key=file_name)
+        response = s3.head_object(Bucket=bucket_name, Key=new_file)
         file_found = True
     except ClientError as err:
         file_found = False
@@ -53,11 +51,25 @@ def lambda_handler(event, context):
             'body': json.dumps("File exist.")
         }
     else:
+        sfn_client = boto3.client('stepfunctions')
+        state_machine_arn = os.environ['STATE_MACHINE']
+
+        response = sfn_client.start_execution(
+            stateMachineArn=state_machine_arn,
+            input=json.dumps({
+                'statusCode': 200,
+                'info': "Dragon Validated.",
+                'file_name': file_name,
+                'new_file': new_file,
+                'bucket_name': bucket_name,
+                'id_file': id_element,
+                'body': dragon_data
+                }
+            )
+        )
+        logger.info(response)
+        
         return {
             'statusCode': 200,
-            'info': json.dumps("Dragon Validated."),
-            'file_name': file_name,
-            'bucket_name': bucket_name,
-            'id_file': id_element,
-            'body': dragon_data
+            'info': json.dumps("Dragon Validated.")
         }
