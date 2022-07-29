@@ -1,114 +1,68 @@
 {
-    "Comment": "A description of my state machine",
-    "StartAt": "ValidateDragonFunction",
-    "States": {
-      "ValidateDragonFunction": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::lambda:invoke",
-        "OutputPath": "$.Payload",
-        "Parameters": {
-          "Payload.$": "$",
-          "FunctionName": "arn:aws:lambda:us-east-1:298039135746:function:MyLambFc-ValidateDragon-baCbOB0CJnY0:$LATEST"
-        },
-        "Retry": [
-          {
-            "ErrorEquals": [
-              "Lambda.ServiceException",
-              "Lambda.AWSLambdaException",
-              "Lambda.SdkClientException"
-            ],
-            "IntervalSeconds": 2,
-            "MaxAttempts": 6,
-            "BackoffRate": 2
-          }
-        ],
-        "Next": "Validated correctly?"
+  "Comment": "A description of my state machine",
+  "StartAt": "AddDragonFunction",
+  "States": {
+    "AddDragonFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:815185358789:function:MyLambfaFunc-AddDragon-pJyUqJk8fgic:$LATEST"
       },
-      "Validated correctly?": {
-        "Type": "Choice",
-        "Choices": [
-          {
-            "Variable": "$.statusCode",
-            "NumericEquals": 200,
-            "Next": "AddDragonFunction",
-            "Comment": "Ok: statusCode = 200"
-          },
-          {
-            "Variable": "$.statusCode",
-            "NumericEquals": 408,
-            "Next": "File exist",
-            "Comment": "File exist: statusCode = 408"
-          }
-        ],
-        "Default": "File not validated"
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "File saved correctly?"
+    },
+    "File saved correctly?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.statusCode ",
+          "NumericEquals": 200,
+          "Next": "MainDragonFunction",
+          "Comment": "File saved: statusCode = 200"
+        }
+      ],
+      "Default": "File can´t save"
+    },
+    "MainDragonFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:815185358789:function:MyLambfaFunc-MainDragon-jgUYXo1L50Zj:$LATEST"
       },
-      "AddDragonFunction": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::lambda:invoke",
-        "OutputPath": "$.Payload",
-        "Parameters": {
-          "Payload.$": "$",
-          "FunctionName": "arn:aws:lambda:us-east-1:298039135746:function:MyLambFc-AddDragon-dnGL67IqZRhY:$LATEST"
-        },
-        "Retry": [
-          {
-            "ErrorEquals": [
-              "Lambda.ServiceException",
-              "Lambda.AWSLambdaException",
-              "Lambda.SdkClientException"
-            ],
-            "IntervalSeconds": 2,
-            "MaxAttempts": 6,
-            "BackoffRate": 2
-          }
-        ],
-        "Next": "File saved correctly?"
-      },
-      "File saved correctly?": {
-        "Type": "Choice",
-        "Choices": [
-          {
-            "Variable": "$.statusCode ",
-            "NumericEquals": 200,
-            "Next": "MainDragonFunction",
-            "Comment": "File saved: statusCode = 200"
-          }
-        ],
-        "Default": "File can´t save"
-      },
-      "MainDragonFunction": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::lambda:invoke",
-        "OutputPath": "$.Payload",
-        "Parameters": {
-          "Payload.$": "$",
-          "FunctionName": "arn:aws:lambda:us-east-1:298039135746:function:MyLambFc-MainDragon-SNfiGY5KhoKf:$LATEST"
-        },
-        "Retry": [
-          {
-            "ErrorEquals": [
-              "Lambda.ServiceException",
-              "Lambda.AWSLambdaException",
-              "Lambda.SdkClientException"
-            ],
-            "IntervalSeconds": 2,
-            "MaxAttempts": 6,
-            "BackoffRate": 2
-          }
-        ],
-        "Next": "Success"
-      },
-      "Success": {
-        "Type": "Succeed"
-      },
-      "File can´t save": {
-        "Type": "Fail"
-      },
-      "File not validated": {
-        "Type": "Fail"
-      },
-      "File exist": {
-        "Type": "Succeed"
-      }
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "Success"
+    },
+    "Success": {
+      "Type": "Succeed"
+    },
+    "File can´t save": {
+      "Type": "Fail"
     }
   }
+}
