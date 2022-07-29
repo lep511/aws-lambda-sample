@@ -7,9 +7,61 @@ Parameters:
 # -----------------------
   BucketNamePrefix:
     Type: String
+    Description: "S3 Bucket prefix"
     Default: dragon-sample-data
 # -----------------------
 Resources:
+# -----------------------
+  StateMachineRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - "sts:AssumeRole"
+                Effect: Allow
+                Principal:
+                  Service: "states.amazonaws.com"
+          Policies:
+            - PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Action:
+                      - "lambda:InvokeFunction"
+                    Resource: "*"
+                    Effect: Allow
+                    Sid: InvokeLambda
+              PolicyName: InvokeLambda
+            - PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Action:
+                      - "sqs:SendMessage"
+                    Resource:
+                      Fn::Sub: "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*"
+                    Effect: Allow
+                    Sid: InvokeSQS
+              PolicyName: InvokeSQS
+            - PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Action:
+                      - "states:StartExecution"
+                    Resource:
+                      Fn::Sub: "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*"
+                    Effect: Allow
+                    Sid: StepFunctionStartExecution
+              PolicyName: StepFunctionStartExecution
+            - PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Action:
+                      - "SNS:Publish"
+                    Resource: !Sub "arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:*"
+                    Effect: Allow
+                    Sid: SNSPolicy
+              PolicyName: SNSPolicy
 # -----------------------
   MainDragon:
     Type: AWS::Serverless::Function
@@ -100,6 +152,84 @@ Resources:
       CompatibleRuntimes:
         - python3.9
 # -----------------------
+  DragonsStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: DragonsStateMachine
+      RoleArn: !GetAtt StateMachineRole.Arn
+      DefinitionString: !Sub
+        - |-
+          {
+            "Comment": "A description of my state machine",
+            "StartAt": "AddDragonFunction",
+            "States": {
+              "AddDragonFunction": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "OutputPath": "$.Payload",
+                "Parameters": {
+                  "Payload.$": "$",
+                  "FunctionName": "${AddDragonArn}"
+                },
+                "Retry": [
+                  {
+                    "ErrorEquals": [
+                      "Lambda.ServiceException",
+                      "Lambda.AWSLambdaException",
+                      "Lambda.SdkClientException"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 6,
+                    "BackoffRate": 2
+                  }
+                ],
+                "Next": "File saved correctly?"
+              },
+              "File saved correctly?": {
+                "Type": "Choice",
+                "Choices": [
+                  {
+                    "Variable": "$.statusCode ",
+                    "NumericEquals": 200,
+                    "Next": "MainDragonFunction",
+                    "Comment": "File saved: statusCode = 200"
+                  }
+                ],
+                "Default": "File can't save"
+              },
+              "MainDragonFunction": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "OutputPath": "$.Payload",
+                "Parameters": {
+                  "Payload.$": "$",
+                  "FunctionName": "${MainDragonArn}"
+                },
+                "Retry": [
+                  {
+                    "ErrorEquals": [
+                      "Lambda.ServiceException",
+                      "Lambda.AWSLambdaException",
+                      "Lambda.SdkClientException"
+                    ],
+                    "IntervalSeconds": 2,
+                    "MaxAttempts": 6,
+                    "BackoffRate": 2
+                  }
+                ],
+                "Next": "Success"
+              },
+              "Success": {
+                "Type": "Succeed"
+              },
+              "File can't save": {
+                "Type": "Fail"
+              }
+            }
+          }
+        - AddDragonArn: !GetAtt AddDragon.Arn
+          MainDragonArn: !GetAtt MainDragon.Arn
+# -----------------------  
   S3Bucket:
     Type: AWS::S3::Bucket
     Description: Creating Amazon S3 bucket from CloudFormation template
