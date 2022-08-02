@@ -62,11 +62,15 @@ Resources:
                     Effect: Allow
                     Sid: SNSPolicy
               PolicyName: SNSPolicy
-          Tags:
-            - Key: "Name"
-              Value: "StateMachineRole"
-          ManagedPolicyArns:
-            - "arn:aws:iam::aws:policy/service-role/AWSXrayFullAccess"
+            - PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Action:
+                      - "xray:*"
+                    Resource: "*"
+                    Effect: Allow
+                    Sid: AWSXrayFullAccess
+              PolicyName: AWSXrayFullAccess
 # -----------------------
   MainDragon:
     Type: AWS::Serverless::Function
@@ -167,7 +171,8 @@ Resources:
     Properties:
       StateMachineName: DragonsStateMachine
       RoleArn: !GetAtt StateMachineRole.Arn
-      XRayEnabled: true
+      TracingConfiguration: 
+        Enabled: true
       DefinitionString: !Sub
         - |-
           {
