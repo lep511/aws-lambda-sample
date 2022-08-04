@@ -78,7 +78,10 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: MainDragon/.
-      MemorySize: 128
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+      MemorySize: 256
       Timeout: 10
       # Function's execution role
       Policies:
@@ -90,6 +93,7 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref libs
+        - arn:aws:lambda:us-east-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1
 # -----------------------
   ValidateDragon:
     Type: AWS::Serverless::Function
@@ -102,6 +106,8 @@ Resources:
           BUCKET_NAME: !Sub "${BucketNamePrefix}-495-117"
           FILE_NAME: DragonData.json
           STATE_MACHINE: !GetAtt DragonsStateMachine.Arn
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+      MemorySize: 256
       Timeout: 10
       # Function's execution role
       Policies:
@@ -114,6 +120,7 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref libs
+        - arn:aws:lambda:us-east-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1
 # -----------------------
   AddDragon:
     Type: AWS::Serverless::Function
@@ -121,7 +128,10 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: AddDragon/.
-      MemorySize: 128
+      Environment:
+        Variables:
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+      MemorySize: 256
       Timeout: 10
       # Function's execution role
       Policies:
@@ -133,6 +143,7 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref libs
+        - arn:aws:lambda:us-east-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1
 # -----------------------
   ListDragons:
     Type: AWS::Serverless::Function
@@ -144,7 +155,8 @@ Resources:
         Variables:
           BUCKET_NAME: !Sub "${BucketNamePrefix}-495-117"
           FILE_NAME: DragonData.json
-      MemorySize: 128
+          AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+      MemorySize: 256
       Timeout: 10
       # Function's execution role
       Policies:
@@ -156,6 +168,7 @@ Resources:
       Tracing: Active
       Layers:
         - !Ref libs
+        - arn:aws:lambda:us-east-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1
 # -----------------------
   libs:
     Type: AWS::Serverless::LayerVersion
