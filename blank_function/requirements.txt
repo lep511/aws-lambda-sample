@@ -1,3 +1,1 @@
-aws-xray-sdk
-opentelemetry-sdk
-opentelemetry-sdk-extension-aws
+boto3
