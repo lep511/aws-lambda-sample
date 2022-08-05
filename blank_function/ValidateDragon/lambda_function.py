@@ -17,16 +17,21 @@ def lambda_handler(event, context):
     file_name = os.environ['FILE_NAME']
     folder_name = 'dragons'
     file_base = 'newDataDragon'
+    
+    if event.get('body'):
+        data_body = json.loads(event['body'])
+    else:
+        data_body = event
 
     try:
         dragon_data = {
-            "description_str":event['description_str'],
-            "dragon_name_str":event['dragon_name_str'],
-            "family_str":event['family_str'],
-            "location_city_str":event['location_city_str'],
-            "location_country_str":event['location_country_str'],
-            "location_neighborhood_str":event['location_neighborhood_str'],
-            "location_state_str":event['location_state_str']
+            "description_str":data_body['description_str'],
+            "dragon_name_str":data_body['dragon_name_str'],
+            "family_str":data_body['family_str'],
+            "location_city_str":data_body['location_city_str'],
+            "location_country_str":data_body['location_country_str'],
+            "location_neighborhood_str":data_body['location_neighborhood_str'],
+            "location_state_str":data_body['location_state_str']
         }
     except:
         return {
@@ -34,7 +39,7 @@ def lambda_handler(event, context):
             'body': json.dumps("Bad Request.")
         }
       
-    id_element = sha256(event['dragon_name_str'].encode('utf-8')).hexdigest()
+    id_element = sha256(data_body['dragon_name_str'].encode('utf-8')).hexdigest()
     new_file = folder_name + "/" + file_base + "-" + str(id_element).lower() + ".json"
 
     logger.info(new_file)
