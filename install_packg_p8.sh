@@ -1,4 +1,4 @@
-read -p "Install python 3.8? (Y/n) " installpy
+read -p "Install python 3.8? (y/N) " installpy
 read -p "Enter name layer: " namelayer
 read -p "Enter package to install or [req.txt]: " packg
 read -p "Enter description: " description

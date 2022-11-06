@@ -1,4 +1,4 @@
-read -p "Install python 3.9? (Y/n) " installpy
+read -p "Install python 3.9? (y/N) " installpy
 read -p "Enter the lambda function name: " lambdaname
 read -p "Enter package to install or [req.txt]: " packg
 read -p "Enter IAM role ARN: " role
