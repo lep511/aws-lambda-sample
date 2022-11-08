@@ -40,4 +40,16 @@ fi
 
 zip -r layer.zip python
 
-aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
+read -p "Create lambda layer? (y/N) " lambdalay
+
+if [[ "$lambdalay" =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+    aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
+fi
+
+read -p "Copy lambda layer to S3? (y/N) " lambdlaycopy
+
+if [[ "$lambdlaycopy" =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+
+fi
