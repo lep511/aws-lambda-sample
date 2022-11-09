@@ -51,5 +51,8 @@ read -p "Copy lambda layer to S3? (y/N) " lambdlaycopy
 
 if [[ "$lambdlaycopy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
-
+    read -r -p  "Enter the name of the bucket: " bucketname
+    aws s3api  create-bucket --bucket $bucketname --region $region
+    aws s3api  put-bucket-tagging --bucket $bucketname --tagging 'TagSet=[{Key=Name,Value="'$bucketname'"}]'
+    aws s3 cp layer.zip s3://$bucketname/lambda_layer.zip
 fi
