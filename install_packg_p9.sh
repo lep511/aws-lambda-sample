@@ -1,7 +1,5 @@
 read -p "Install python 3.9? (y/N) " installpy
-read -p "Enter name layer: " namelayer
 read -p "Enter package to install or [req.txt]: " packg
-read -p "Enter description: " description
 read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
@@ -44,6 +42,8 @@ read -p "Create lambda layer? (y/N) " lambdalay
 
 if [[ "$lambdalay" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
+    read -p "Enter name layer: " namelayer
+    read -p "Enter description: " description
     aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
 fi
 
