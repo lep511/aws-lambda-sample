@@ -44,6 +44,9 @@ if [[ "$lambdalay" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     read -p "Enter name layer: " namelayer
     read -p "Enter description: " description
+    if [[ -z "$description" ]]; then
+        export description="-"
+    fi
     aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
 fi
 
