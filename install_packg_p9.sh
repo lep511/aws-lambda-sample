@@ -28,6 +28,7 @@ if [[ -z "$description" ]]; then
     export description="-"
 fi
 
+rm python/ -rf
 mkdir -p python
 
 if [[ -z "$packg" ]]; then
