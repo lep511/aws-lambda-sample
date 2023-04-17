@@ -1,0 +1,21 @@
+productid,description,price,category,images,amount_sold,writersid
+1,"Men's Running Shoes",89.99,Shoes,"shoe1.jpg|shoe2.jpg|shoe3.jpg",200,101
+2,"Women's Running Shoes",79.99,Shoes,"shoe4.jpg|shoe5.jpg|shoe6.jpg",150,102
+3,"Wireless Headphones",49.99,Electronics,"headphone1.jpg|headphone2.jpg|headphone3.jpg",100,103
+4,"Bluetooth Speaker",99.99,Electronics,"speaker1.jpg|speaker2.jpg|speaker3.jpg",75,104
+5,"Sweatshirt Hoodie",39.99,Clothing,"hoodie1.jpg|hoodie2.jpg|hoodie3.jpg",250,105
+6,"Men's Dress Shirt",59.99,Clothing,"shirt1.jpg|shirt2.jpg|shirt3.jpg",175,106
+7,"Women's Dress",79.99,Clothing,"dress1.jpg|dress2.jpg|dress3.jpg",100,107
+8,"Fitness Tracker Watch",129.99,Electronics,"watch1.jpg|watch2.jpg|watch3.jpg",50,108
+9,"Wireless Earbuds",29.99,Electronics,"earbuds1.jpg|earbuds2.jpg|earbuds3.jpg",125,109
+10,"Laptop Backpack",59.99,Accessories,"backpack1.jpg|backpack2.jpg|backpack3.jpg",100,110
+11,"Men's Polo Shirt",39.99,Clothing,"polo1.jpg|polo2.jpg|polo3.jpg",200,106
+12,"Women's Sandals",29.99,Shoes,"sandals1.jpg|sandals2.jpg|sandals3.jpg",150,102
+13,"Leather Wallet",19.99,Accessories,"wallet1.jpg|wallet2.jpg|wallet3.jpg",300,111
+14,"Wireless Keyboard",59.99,Electronics,"keyboard1.jpg|keyboard2.jpg|keyboard3.jpg",50,112
+15,"Smartphone Case",9.99,Accessories,"case1.jpg|case2.jpg|case3.jpg",400,113
+16,"Tennis Racquet",149.99,Sports,"racquet1.jpg|racquet2.jpg|racquet3.jpg",25,114
+17,"Cycling Helmet",69.99,Sports,"helmet1.jpg|helmet2.jpg|helmet3.jpg",75,115
+18,"Cookbook",24.99,Books,"book1.jpg|book2.jpg|book3.jpg",200,116
+19,"Sunglasses",39.99,Accessories,"sunglasses1.jpg|sunglasses2.jpg|sunglasses3.jpg",100,117
+20,"Gym Bag",29.99,Accessories,"bag1.jpg|bag2.jpg|bag3.jpg",125,110
