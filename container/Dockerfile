@@ -4,7 +4,7 @@ FROM public.ecr.aws/lambda/python:3.9
 # from your project folder.
 
 COPY requirements.txt  .
-RUN  pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+RUN  pip3 install -Ur requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
 # Copy function code
 COPY app.py ${LAMBDA_TASK_ROOT}
