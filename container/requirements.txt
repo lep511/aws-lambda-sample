@@ -1,0 +1,3 @@
+aws-encryption-sdk
+aws-encryption-sdk-cli
+boto3
