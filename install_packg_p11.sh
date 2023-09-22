@@ -31,9 +31,9 @@ rm python/ -rf
 mkdir -p python
 
 if [[ -z "$packg" ]]; then
-    python3.9 -m pip install -r req.txt -t python/
+    python -m pip install -r req.txt -t python/
 else
-    python3.9 -m pip install $packg -t python/
+    python -m pip install $packg -t python/
 fi
 
 zip -r layer.zip python
@@ -47,7 +47,7 @@ then
     if [[ -z "$description" ]]; then
         export description="-"
     fi
-    aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.9 --region $region
+    aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.11 --region $region
 fi
 
 read -p "Copy lambda layer to S3? (y/N) " lambdlaycopy
