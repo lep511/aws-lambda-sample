@@ -8,13 +8,11 @@ then
     cd
     sudo yum update -y
     sudo amazon-linux-extras install docker -y
-    sudo yum -y groupinstall "Development Tools"
-    sudo yum -y install openssl-devel bzip2-devel libffi-devel
-    sudo yum -y install wget
-    wget https://www.python.org/ftp/python/3.11.5/Python-3.11.5.tar.xz
-    tar xvf Python-3.11.5.tar.xz
-    cd Python-*/
-    ./configure --enable-optimizations
+    sudo yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel -y 
+    wget https://www.python.org/ftp/python/3.11.4/Python-3.11.4.tgz
+    tar xzf Python-3.11.4.tgz
+    cd Python-3.11.4
+    sudo ./configure --enable-optimizations
     sudo make altinstall
     python3.11 -m venv .venv
     source .venv/bin/activate
