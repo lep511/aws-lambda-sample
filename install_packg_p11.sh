@@ -43,7 +43,7 @@ then
     if [[ -z "$description" ]]; then
         export description="-"
     fi
-    aws lambda publish-layer-version --layer-name $namelayer --description $description --zip-file fileb://layer.zip --compatible-runtimes python3.11 --region $region
+    aws lambda publish-layer-version --layer-name $namelayer --description "$description" --zip-file fileb://layer.zip --compatible-runtimes python3.11 --region $region
 fi
 
 read -p "Copy lambda layer to S3? (y/N) " lambdlaycopy
