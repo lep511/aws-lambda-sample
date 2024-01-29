@@ -4,19 +4,8 @@ read -p "Enter region: [us-east-1]" region
 
 if [[ "$installpy" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
-    cwd=$(pwd)
-    cd
-    sudo yum update -y
-    sudo amazon-linux-extras install docker -y
-    sudo yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel -y 
-    wget https://www.python.org/ftp/python/3.11.4/Python-3.11.4.tgz
-    tar xzf Python-3.11.4.tgz
-    cd Python-3.11.4
-    sudo ./configure --enable-optimizations
-    sudo make altinstall
-    python3.11 -m venv .venv
-    source .venv/bin/activate
-    cd $cwd
+    sudo dnf search python3.11
+    sudo dnf install python3.11 -y
 fi
 
 if [[ -z "$region" ]]; then
@@ -26,6 +15,10 @@ fi
 if [[ -z "$description" ]]; then
     export description="-"
 fi
+
+python3.11 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
 
 rm python/ -rf
 mkdir -p python
