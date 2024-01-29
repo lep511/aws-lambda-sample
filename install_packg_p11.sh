@@ -29,6 +29,9 @@ else
     python -m pip install $packg -t python/
 fi
 
+cd python
+rm -rf *dist-info
+cd ..
 zip -r layer.zip python
 
 read -p "Create lambda layer? (y/N) " lambdalay
