@@ -43,6 +43,7 @@ then
     if [[ -z "$description" ]]; then
         export description="-"
     fi
+    echo "Wait a minute..."
     aws lambda publish-layer-version --layer-name $namelayer --description "$description" --zip-file fileb://layer.zip --compatible-runtimes python3.11 --region $region
 fi
 
@@ -54,4 +55,6 @@ then
     aws s3api  create-bucket --bucket $bucketname --region $region
     aws s3api  put-bucket-tagging --bucket $bucketname --tagging 'TagSet=[{Key=Name,Value="'$bucketname'"}]'
     aws s3 cp layer.zip s3://$bucketname/lambda_layer.zip
+else
+    echo "Lambda layer created."
 fi
